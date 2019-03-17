@@ -134,7 +134,36 @@ app.get('/player_info', function(req, res) {
   				2. Retrieve the specific football player's informatioin from the football_players table
   				3. Retrieve the total number of football games the player has played in*/
 
+app.get('/player_info/post', function(req, res) {
+	var param = req.query.player_choice;
+	var players = 'select id, name from football_players;';
+	var player = 'select * from football_players where id = ' + param + ';';
+	var gamesplayed = 'select count(*) from football_games where ' + param + ' = ANY(players);';
+	db.task('get-everything', task => {
+		return task.batch([
+			task.any(players),
+			task.any(player),
+			task.any(gamesplayed)
+		]);
+	})
+	.then(info => {
+		res.render('pages/player_info', {
+			my_title: "Player Info",
+			resultz: data[0],
+			playerInfo: data[1],
+			gamesPlayer: data[2]
+		})
+	})
+	.catch(error => {
+		res.render('pages/player_info', {
+			my_title: "Player Info",
+			resultz: '',
+			playerInfo: '',
+			gamesPlayer: ''
+		})
+	});
 
+});
 
 /*Add your other get/post request handlers below here: */
 app.get('/home', function(req, res) {
