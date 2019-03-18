@@ -150,7 +150,7 @@ app.get('/player_info/post', function(req, res) {
 			task.any(gamesplayed)
 		]);
 	})
-	.then(info => {
+	.then(data => {
 		res.render('pages/player_info', {
 			my_title: "Player Info",
 			resultz: data[0],
